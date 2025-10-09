@@ -1,0 +1,19 @@
+# virtual env
+.venv/
+venv/
+
+# cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# system files
+.DS_Store
+
+# editor configs
+.idea/
+.vscode/
+
+# logs
+*.log
