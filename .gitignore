@@ -2,18 +2,20 @@
 .venv/
 venv/
 
-# cache & compiled files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# Kaggle / secrets
+kaggle.json
+.env
+.kaggle/
 
-# system files
+# OS / editor
 .DS_Store
+.vscode/
 
 # editor configs
 .idea/
 .vscode/
 
-# logs
-*.log
+# Python
+__pycache__/
+*.pyc
+.venv/

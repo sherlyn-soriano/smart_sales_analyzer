@@ -6,6 +6,7 @@ cycler==0.12.1
 fonttools==4.60.1
 idna==3.10
 kaggle==1.7.4.5
+kagglehub==0.3.13
 kiwisolver==1.4.9
 matplotlib==3.10.7
 numpy==2.3.3
@@ -15,8 +16,10 @@ pillow==11.3.0
 protobuf==6.32.1
 pyparsing==3.2.5
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
 python-slugify==8.0.4
 pytz==2025.2
+PyYAML==6.0.3
 requests==2.32.5
 setuptools==80.9.0
 six==1.17.0
