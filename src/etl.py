@@ -75,15 +75,11 @@ class SalesETL:
         self.df = pl.read_csv(csv_path, try_parse_dates=True)
 
         # Data Tranformations
+        self.df = self.df.rename({ col: col.strip().replace(' ','_').lower()
+                                    for col in self.df.columns }) 
         self.df = self.df.with_columns([pl.col("Order Date").str.to_date("%d/%m/%Y").alias("Order Date"),
                                         pl.col("Ship Date").str.to_date("%d/%m/%Y").alias("Ship Date")])
-        self.df = self.df.with_columns([pl.col("Order Date").dt.year().alias("year"),
-                                        pl.col("Order Date").dt.month().alias("month"),
-                                        (pl.col("Ship Date") - pl.col("Order Date")).dt.total_days().alias("delivery_days"),
-                                        pl.col("Sales").round(2).alias("Sales"),
-                                        (pl.col("Sales") * 0.4).round(2).alias("profit_estimate"),
-                                        pl.col("Order Date").dt.strftime("%Y-%m").alias("order_month")])
-
+        
         logger.info(f"Loaded {len(self.df):,}rows with {len(self.df.columns)} columns")
         staging_file = self.staging_dir / "sales_stating.parquet"
         self.df.write_parquet(staging_file)

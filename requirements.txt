@@ -12,6 +12,7 @@ cryptography==46.0.3
 cycler==0.12.1
 duckdb==1.4.1
 entrypoints==0.4
+Faker==37.11.0
 fonttools==4.60.1
 great_expectations==1.7.1
 idna==3.10
