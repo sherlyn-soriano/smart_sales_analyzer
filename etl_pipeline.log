@@ -36,3 +36,49 @@
 2025-10-22 04:11:46,848 - INFO - Saved top_products summary to data/top_products.csv
 2025-10-22 04:11:46,848 - INFO - Saved data quality report to data/quality_report.json
 2025-10-22 04:11:46,911 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
+2025-10-22 04:28:26,664 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 04:28:26,665 - INFO - Downloading dataset rohitsahoo/sales-forecasting into data
+2025-10-22 04:28:27,762 - WARNING - Kaggle download failed: 404 Client Error.
+
+Resource not found at URL: https://www.kaggle.com/datasets/rohitsahoo/sales-forecasting/versions/2
+The server reported the following issues: Dataset not found
+Please make sure you specified the correct resource identifiers.
+2025-10-22 04:28:27,762 - INFO - Base dataset not found; proceeding with fully synthetic data
+2025-10-22 04:28:27,763 - INFO - Generating synthetic dataset with 5000 rows
+2025-10-22 04:28:27,763 - INFO - Generating 5000 synthetic rows...
+2025-10-22 04:28:28,111 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 04:28:28,124 - INFO - Could not find local file-backed GX project
+2025-10-22 04:28:28,125 - INFO - Created temporary directory '/tmp/tmp6r7zgynt' for ephemeral docs site
+2025-10-22 04:28:28,125 - INFO - Loading 'datasources' ->
+[]
+2025-10-22 04:28:28,162 - INFO - Data quality checks success=True
+2025-10-22 04:28:28,166 - INFO - Saved enriched dataset to data/sales_enriched.parquet
+2025-10-22 04:28:28,166 - INFO - Saved yearly summary to data/yearly.csv
+2025-10-22 04:28:28,167 - INFO - Saved segment_yearly summary to data/segment_yearly.csv
+2025-10-22 04:28:28,167 - INFO - Saved regional_revenue summary to data/regional_revenue.csv
+2025-10-22 04:28:28,167 - INFO - Saved top_products summary to data/top_products.csv
+2025-10-22 04:28:28,167 - INFO - Saved data quality report to data/quality_report.json
+2025-10-22 04:28:28,229 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
+2025-10-22 04:41:59,378 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 04:41:59,378 - INFO - Downloading dataset rohitsahoo/sales-forecasting into data
+2025-10-22 04:42:00,310 - WARNING - Kaggle download failed: 404 Client Error.
+
+Resource not found at URL: https://www.kaggle.com/datasets/rohitsahoo/sales-forecasting/versions/2
+The server reported the following issues: Dataset not found
+Please make sure you specified the correct resource identifiers.
+2025-10-22 04:42:00,312 - INFO - Base dataset not found; proceeding with fully synthetic data
+2025-10-22 04:42:00,313 - INFO - Generating synthetic dataset with 5000 rows
+2025-10-22 04:42:00,313 - INFO - Generating 5000 synthetic rows...
+2025-10-22 04:42:00,657 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 04:42:00,671 - INFO - Could not find local file-backed GX project
+2025-10-22 04:42:00,671 - INFO - Created temporary directory '/tmp/tmpifvd73oy' for ephemeral docs site
+2025-10-22 04:42:00,671 - INFO - Loading 'datasources' ->
+[]
+2025-10-22 04:42:00,710 - INFO - Data quality checks success=True
+2025-10-22 04:42:00,714 - INFO - Saved enriched dataset to data/sales_enriched.parquet
+2025-10-22 04:42:00,715 - INFO - Saved yearly summary to data/yearly.csv
+2025-10-22 04:42:00,715 - INFO - Saved segment_yearly summary to data/segment_yearly.csv
+2025-10-22 04:42:00,715 - INFO - Saved regional_revenue summary to data/regional_revenue.csv
+2025-10-22 04:42:00,715 - INFO - Saved top_products summary to data/top_products.csv
+2025-10-22 04:42:00,716 - INFO - Saved data quality report to data/quality_report.json
+2025-10-22 04:42:00,779 - INFO - Persisted analytics tables into data/sales_analytics.duckdb

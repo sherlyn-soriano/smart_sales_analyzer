@@ -1,14 +1,13 @@
-"""Smart Sales Analyzer - Local ETL pipeline with modern data stack touches."""
+"""Smart Sales Analyzer - Local ETL pipeline"""
 
 from __future__ import annotations
-
 import logging
 import os
 import warnings
 import json
+import shutil
 from pathlib import Path
 from typing import Dict, Optional
-
 import duckdb
 import polars as pl
 import kagglehub
@@ -40,6 +39,11 @@ class SalesETL:
         self.synthetic_generator = SyntheticDataGenerator()
         self.df: Optional[pl.DataFrame] = None
         self.warehouse_path = self.data_dir / "sales_analytics.duckdb"
+        env_slug = os.getenv("KAGGLE_DATASET_SLUG")
+        default_slugs = [
+            slug for slug in [env_slug, "rohitsahoo/sales-forecasting"] if slug
+        ]
+        self.kaggle_dataset_slugs = list(dict.fromkeys(default_slugs))
         self._setup_kaggle_credentials()
         logger.debug("SalesETL initialized with data directory: %s", self.data_dir.resolve())
 
@@ -79,7 +83,7 @@ class SalesETL:
 
     def download_kaggle_dataset(
         self,
-        dataset_slug: str = "rohitsahoo/sales-forecasting",
+        dataset_slug: Optional[str] = None,
         force: bool = False,
     ) -> Optional[Path]:
         """Download dataset from Kaggle into the data directory."""
@@ -88,19 +92,47 @@ class SalesETL:
             logger.debug("Existing Kaggle dataset found at %s; skipping download.", target_csv)
             return target_csv
 
-        try:
-            logger.info("Downloading dataset %s into %s", dataset_slug, self.data_dir)
-            download_path = Path(
-                kagglehub.dataset_download(dataset_slug, path=str(self.data_dir))
-            )
-            csv_path = download_path / "train.csv"
-            if csv_path.exists():
-                csv_path.replace(target_csv)
-                logger.info("Dataset downloaded to %s", target_csv)
-                return target_csv
-            logger.warning("train.csv not found after download.")
-        except Exception as exc:  # pragma: no cover - defensive
-            logger.warning("Kaggle download failed: %s", exc)
+        slugs_to_try = []
+        if dataset_slug:
+            slugs_to_try.append(dataset_slug)
+        slugs_to_try.extend(self.kaggle_dataset_slugs)
+
+        seen: set[str] = set()
+        slugs_to_try = [
+            slug for slug in slugs_to_try if slug and not (slug in seen or seen.add(slug))
+        ]
+
+        if not slugs_to_try:
+            logger.warning("No Kaggle dataset slug configured; skipping download.")
+            return None
+
+        for slug in slugs_to_try:
+            try:
+                logger.info("Downloading dataset %s into %s", slug, self.data_dir)
+                download_path = Path(kagglehub.dataset_download(slug, path=str(self.data_dir)))
+                logger.debug("Dataset %s downloaded to %s", slug, download_path)
+            except Exception as exc:  # pragma: no cover - defensive
+                logger.warning("Kaggle download failed for %s: %s", slug, exc)
+                continue
+
+            csv_candidates = []
+            if download_path.is_file():
+                csv_candidates.append(download_path)
+            else:
+                csv_candidates.append(download_path / "train.csv")
+                try:
+                    csv_candidates.extend(download_path.rglob("train.csv"))
+                except (NotADirectoryError, PermissionError):
+                    pass
+
+            for csv_path in csv_candidates:
+                if csv_path.exists():
+                    shutil.copy2(csv_path, target_csv)
+                    logger.info("Dataset downloaded to %s via %s", target_csv, slug)
+                    return target_csv
+
+            logger.warning("train.csv not found after downloading %s.", slug)
+
         return None
 
     def build_dataset(
