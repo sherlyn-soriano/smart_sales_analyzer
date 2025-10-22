@@ -123,10 +123,6 @@ PY
 Drop your screenshots in `assets/` and reference them here. Examples from my run:
 
 <p align="center">
-  <img src="assets/pipeline_run.png" alt="ETL execution with data quality success" width="640">
-</p>
-
-<p align="center">
   <img src="assets/streamline_dashboard_1.png" alt="Streamlit dashboard overview" width="640">
 </p>
 
@@ -135,10 +131,21 @@ Drop your screenshots in `assets/` and reference them here. Examples from my run
 </p>
 
 <p align="center">
-  <img src="assets/Revenue_by_year.png" alt="DuckDB yearly revenue query results" width="640">
+  <img src="assets/streamline_dashboard_3.png" alt="Streamlit dashboard regional view" width="640">
+</p>
+
+<p align="center">
+  <img src="assets/pipeline_run_snippet.png" alt="ETL execution with data quality success" width="640">
+</p>
+
+<p align="center">
+  <img src="assets/analytics.yearly_summary.png" alt="DuckDB yearly revenue query results" width="640">
 </p>
 
 <p align="center">
   <img src="assets/analytics.top_products_summary.png" alt="DuckDB top products query results" width="640">
 </p>
 
+<p align="center">
+  <img src="assets/analytics.regional_revenue_summary.png" alt="DuckDB regional revenue query results" width="640">
+</p>
