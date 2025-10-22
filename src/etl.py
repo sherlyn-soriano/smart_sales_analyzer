@@ -64,7 +64,24 @@ class SalesETL:
         for path in candidates:
             if path.exists():
                 logger.debug("Loading base dataset from %s", path)
-                return pl.read_csv(path, try_parse_dates=True)
+                self._clean_kaggle_csv(path)
+                df = pl.read_csv(path, try_parse_dates=True)
+                # Drop unnamed/duplicate trailing columns left by malformed CSV headers.
+                drop_cols = [
+                    col
+                    for col in df.columns
+                    if not col or not col.strip() or col.startswith("_duplicated_")
+                ]
+                if drop_cols:
+                    df = df.drop(drop_cols)
+                essential_cols = [
+                    col_name
+                    for col_name in ["Order ID", "Customer ID", "Sales", "Order Date"]
+                    if col_name in df.columns
+                ]
+                if essential_cols:
+                    df = df.drop_nulls(subset=essential_cols)
+                return df
 
         logger.info("Base dataset not found; proceeding with fully synthetic data")
         return None
@@ -89,6 +106,7 @@ class SalesETL:
         """Download dataset from Kaggle into the data directory."""
         target_csv = self.data_dir / "train.csv"
         if target_csv.exists() and not force:
+            self._clean_kaggle_csv(target_csv)
             logger.debug("Existing Kaggle dataset found at %s; skipping download.", target_csv)
             return target_csv
 
@@ -113,6 +131,11 @@ class SalesETL:
                 logger.debug("Dataset %s downloaded to %s", slug, download_path)
             except Exception as exc:  # pragma: no cover - defensive
                 logger.warning("Kaggle download failed for %s: %s", slug, exc)
+                cached_csv = self._find_cached_kaggle_csv(slug)
+                if cached_csv:
+                    shutil.copy2(cached_csv, target_csv)
+                    logger.info("Used cached dataset for %s -> %s", slug, target_csv)
+                    return target_csv
                 continue
 
             csv_candidates = []
@@ -128,12 +151,59 @@ class SalesETL:
             for csv_path in csv_candidates:
                 if csv_path.exists():
                     shutil.copy2(csv_path, target_csv)
+                    self._clean_kaggle_csv(target_csv)
                     logger.info("Dataset downloaded to %s via %s", target_csv, slug)
                     return target_csv
+
+            cached_csv = self._find_cached_kaggle_csv(slug)
+            if cached_csv:
+                shutil.copy2(cached_csv, target_csv)
+                self._clean_kaggle_csv(target_csv)
+                logger.info("Used cached dataset for %s -> %s", slug, target_csv)
+                return target_csv
 
             logger.warning("train.csv not found after downloading %s.", slug)
 
         return None
+
+    def _find_cached_kaggle_csv(self, slug: str) -> Optional[Path]:
+        """Return train.csv from KaggleHub cache if it exists."""
+        cache_root = Path.home() / ".cache" / "kagglehub" / "datasets" / slug / "versions"
+        if not cache_root.exists():
+            return None
+
+        version_dirs = sorted(
+            [path for path in cache_root.iterdir() if path.is_dir()],
+            key=lambda path: path.name,
+            reverse=True,
+        )
+
+        for version_dir in version_dirs:
+            csv_path = version_dir / "train.csv"
+            if csv_path.exists():
+                logger.debug("Found cached Kaggle dataset for %s at %s", slug, csv_path)
+                return csv_path
+
+        return None
+
+    def _clean_kaggle_csv(self, csv_path: Path) -> None:
+        """Patch known CSV issues (e.g., stray commas in product names) before loading."""
+        if not csv_path.exists():
+            return
+
+        replacements = {
+            "Flash Drive, 16GB": "Flash Drive 16GB",
+            "Flash Drive, 32GB": "Flash Drive 32GB",
+        }
+
+        content = csv_path.read_text(encoding="utf-8")
+        cleaned = content
+        for needle, fix in replacements.items():
+            cleaned = cleaned.replace(needle, fix)
+
+        if cleaned != content:
+            csv_path.write_text(cleaned, encoding="utf-8")
+            logger.debug("Patched Kaggle dataset CSV to fix malformed product names.")
 
     def build_dataset(
         self,

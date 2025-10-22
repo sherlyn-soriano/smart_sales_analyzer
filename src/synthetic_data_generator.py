@@ -227,6 +227,20 @@ class SyntheticDataGenerator:
         synthetic_df = self.generate_synthetic_data(
             original_df, num_rows=num_synthetic_rows, **kwargs
         )
+        if original_df is not None and len(original_df) > 0:
+            schema = original_df.schema
+            aligned_columns = []
+            for column_name, dtype in schema.items():
+                if column_name in synthetic_df.columns:
+                    aligned_columns.append(
+                        pl.col(column_name).cast(dtype, strict=False).alias(column_name)
+                    )
+                else:
+                    aligned_columns.append(
+                        pl.lit(None).cast(dtype).alias(column_name)
+                    )
+            synthetic_df = synthetic_df.select(aligned_columns)
+
         combined_df = pl.concat([original_df, synthetic_df])
         logger.info(
             "Augmented data: %s original + %s synthetic = %s total rows",

@@ -82,3 +82,130 @@ Please make sure you specified the correct resource identifiers.
 2025-10-22 04:42:00,715 - INFO - Saved top_products summary to data/top_products.csv
 2025-10-22 04:42:00,716 - INFO - Saved data quality report to data/quality_report.json
 2025-10-22 04:42:00,779 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
+2025-10-22 05:25:59,897 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:25:59,898 - INFO - Downloading dataset rohitsahoo/sales-forecasting into data
+2025-10-22 05:26:00,862 - WARNING - Kaggle download failed for rohitsahoo/sales-forecasting: 404 Client Error.
+
+Resource not found at URL: https://www.kaggle.com/datasets/rohitsahoo/sales-forecasting/versions/2
+The server reported the following issues: Dataset not found
+Please make sure you specified the correct resource identifiers.
+2025-10-22 05:26:00,864 - INFO - Base dataset not found; proceeding with fully synthetic data
+2025-10-22 05:26:00,864 - INFO - Generating synthetic dataset with 5000 rows
+2025-10-22 05:26:00,865 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:26:01,209 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:26:01,223 - INFO - Could not find local file-backed GX project
+2025-10-22 05:26:01,223 - INFO - Created temporary directory '/tmp/tmp10hzxzxv' for ephemeral docs site
+2025-10-22 05:26:01,223 - INFO - Loading 'datasources' ->
+[]
+2025-10-22 05:26:01,273 - INFO - Data quality checks success=True
+2025-10-22 05:26:01,276 - INFO - Saved enriched dataset to data/sales_enriched.parquet
+2025-10-22 05:26:01,276 - INFO - Saved yearly summary to data/yearly.csv
+2025-10-22 05:26:01,277 - INFO - Saved segment_yearly summary to data/segment_yearly.csv
+2025-10-22 05:26:01,277 - INFO - Saved regional_revenue summary to data/regional_revenue.csv
+2025-10-22 05:26:01,277 - INFO - Saved top_products summary to data/top_products.csv
+2025-10-22 05:26:01,277 - INFO - Saved data quality report to data/quality_report.json
+2025-10-22 05:26:01,338 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
+2025-10-22 05:32:00,642 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:32:00,643 - INFO - Downloading dataset rohitsahoo/sales-forecasting into data
+2025-10-22 05:32:01,528 - WARNING - Kaggle download failed for rohitsahoo/sales-forecasting: 404 Client Error.
+
+Resource not found at URL: https://www.kaggle.com/datasets/rohitsahoo/sales-forecasting/versions/2
+The server reported the following issues: Dataset not found
+Please make sure you specified the correct resource identifiers.
+2025-10-22 05:32:01,531 - INFO - Used cached dataset for rohitsahoo/sales-forecasting -> data/train.csv
+2025-10-22 05:35:40,416 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:35:40,448 - INFO - Augmenting base dataset (9804 rows) with 5000 synthetic rows
+2025-10-22 05:35:40,448 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:35:40,822 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:36:25,447 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:36:32,174 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:36:32,198 - INFO - Augmenting base dataset (9804 rows) with 5000 synthetic rows
+2025-10-22 05:36:32,198 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:36:32,556 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:36:42,903 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:36:42,924 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:36:42,924 - INFO - Generating 1 synthetic rows...
+2025-10-22 05:36:42,925 - INFO - Successfully generated 1 synthetic rows
+2025-10-22 05:37:45,268 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:37:45,293 - INFO - Augmenting base dataset (9804 rows) with 5000 synthetic rows
+2025-10-22 05:37:45,294 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:37:45,667 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:37:45,669 - INFO - Augmented data: 9804 original + 5000 synthetic = 14804 total rows
+2025-10-22 05:37:45,695 - INFO - Could not find local file-backed GX project
+2025-10-22 05:37:45,696 - INFO - Created temporary directory '/tmp/tmpo9kkuhw9' for ephemeral docs site
+2025-10-22 05:37:45,696 - INFO - Loading 'datasources' ->
+[]
+2025-10-22 05:37:45,746 - INFO - Data quality checks success=False
+2025-10-22 05:37:45,752 - INFO - Saved enriched dataset to data/sales_enriched.parquet
+2025-10-22 05:37:45,753 - INFO - Saved yearly summary to data/yearly.csv
+2025-10-22 05:37:45,753 - INFO - Saved segment_yearly summary to data/segment_yearly.csv
+2025-10-22 05:37:45,753 - INFO - Saved regional_revenue summary to data/regional_revenue.csv
+2025-10-22 05:37:45,754 - INFO - Saved top_products summary to data/top_products.csv
+2025-10-22 05:37:45,754 - INFO - Saved data quality report to data/quality_report.json
+2025-10-22 05:37:45,845 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
+2025-10-22 05:38:56,736 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:38:56,760 - INFO - Augmenting base dataset (9804 rows) with 5000 synthetic rows
+2025-10-22 05:38:56,760 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:38:57,094 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:38:57,096 - INFO - Augmented data: 9804 original + 5000 synthetic = 14804 total rows
+2025-10-22 05:38:57,116 - INFO - Could not find local file-backed GX project
+2025-10-22 05:38:57,117 - INFO - Created temporary directory '/tmp/tmpndzvtfhp' for ephemeral docs site
+2025-10-22 05:38:57,117 - INFO - Loading 'datasources' ->
+[]
+2025-10-22 05:38:57,166 - INFO - Data quality checks success=False
+2025-10-22 05:38:57,173 - INFO - Saved enriched dataset to data/sales_enriched.parquet
+2025-10-22 05:38:57,173 - INFO - Saved yearly summary to data/yearly.csv
+2025-10-22 05:38:57,174 - INFO - Saved segment_yearly summary to data/segment_yearly.csv
+2025-10-22 05:38:57,174 - INFO - Saved regional_revenue summary to data/regional_revenue.csv
+2025-10-22 05:38:57,174 - INFO - Saved top_products summary to data/top_products.csv
+2025-10-22 05:38:57,174 - INFO - Saved data quality report to data/quality_report.json
+2025-10-22 05:38:57,269 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
+2025-10-22 05:40:41,659 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:40:41,678 - INFO - Augmenting base dataset (9804 rows) with 5000 synthetic rows
+2025-10-22 05:40:41,678 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:40:42,040 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:40:42,042 - INFO - Augmented data: 9804 original + 5000 synthetic = 14804 total rows
+2025-10-22 05:40:48,908 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:40:48,928 - INFO - Augmenting base dataset (9804 rows) with 5000 synthetic rows
+2025-10-22 05:40:48,928 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:40:49,292 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:40:49,294 - INFO - Augmented data: 9804 original + 5000 synthetic = 14804 total rows
+2025-10-22 05:40:57,766 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:40:57,787 - INFO - Augmenting base dataset (9804 rows) with 5000 synthetic rows
+2025-10-22 05:40:57,787 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:40:58,164 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:40:58,166 - INFO - Augmented data: 9804 original + 5000 synthetic = 14804 total rows
+2025-10-22 05:41:35,720 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:41:35,759 - INFO - Augmenting base dataset (9800 rows) with 5000 synthetic rows
+2025-10-22 05:41:35,759 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:41:36,121 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:41:36,124 - INFO - Augmented data: 9800 original + 5000 synthetic = 14800 total rows
+2025-10-22 05:41:36,143 - INFO - Could not find local file-backed GX project
+2025-10-22 05:41:36,143 - INFO - Created temporary directory '/tmp/tmpra428x44' for ephemeral docs site
+2025-10-22 05:41:36,144 - INFO - Loading 'datasources' ->
+[]
+2025-10-22 05:41:36,195 - INFO - Data quality checks success=True
+2025-10-22 05:41:36,202 - INFO - Saved enriched dataset to data/sales_enriched.parquet
+2025-10-22 05:41:36,202 - INFO - Saved yearly summary to data/yearly.csv
+2025-10-22 05:41:36,203 - INFO - Saved segment_yearly summary to data/segment_yearly.csv
+2025-10-22 05:41:36,203 - INFO - Saved regional_revenue summary to data/regional_revenue.csv
+2025-10-22 05:41:36,203 - INFO - Saved top_products summary to data/top_products.csv
+2025-10-22 05:41:36,207 - INFO - Saved data quality report to data/quality_report.json
+2025-10-22 05:41:36,322 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
+2025-10-22 05:42:32,538 - INFO - Initialized SyntheticDataGenerator with seed=42
+2025-10-22 05:42:32,567 - INFO - Augmenting base dataset (9800 rows) with 5000 synthetic rows
+2025-10-22 05:42:32,567 - INFO - Generating 5000 synthetic rows...
+2025-10-22 05:42:32,911 - INFO - Successfully generated 5000 synthetic rows
+2025-10-22 05:42:32,914 - INFO - Augmented data: 9800 original + 5000 synthetic = 14800 total rows
+2025-10-22 05:42:32,933 - INFO - Could not find local file-backed GX project
+2025-10-22 05:42:32,933 - INFO - Created temporary directory '/tmp/tmpeviasuru' for ephemeral docs site
+2025-10-22 05:42:32,934 - INFO - Loading 'datasources' ->
+[]
+2025-10-22 05:42:32,983 - INFO - Data quality checks success=True
+2025-10-22 05:42:32,989 - INFO - Saved enriched dataset to data/sales_enriched.parquet
+2025-10-22 05:42:32,990 - INFO - Saved yearly summary to data/yearly.csv
+2025-10-22 05:42:32,990 - INFO - Saved segment_yearly summary to data/segment_yearly.csv
+2025-10-22 05:42:32,990 - INFO - Saved regional_revenue summary to data/regional_revenue.csv
+2025-10-22 05:42:32,991 - INFO - Saved top_products summary to data/top_products.csv
+2025-10-22 05:42:32,994 - INFO - Saved data quality report to data/quality_report.json
+2025-10-22 05:42:33,085 - INFO - Persisted analytics tables into data/sales_analytics.duckdb
