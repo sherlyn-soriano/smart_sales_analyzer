@@ -3,16 +3,22 @@
 from __future__ import annotations
 
 import logging
+import os
+import warnings
 import json
 from pathlib import Path
 from typing import Dict, Optional
 
 import duckdb
 import polars as pl
-from dotenv import load_dotenv
 import kagglehub
-import os
-from great_expectations.dataset import PandasDataset
+import great_expectations as ge
+from dotenv import load_dotenv
+from great_expectations.core.batch import Batch
+from great_expectations.core.batch_spec import RuntimeDataBatchSpec
+from great_expectations.core.expectation_suite import ExpectationSuite
+from great_expectations.execution_engine import PandasExecutionEngine
+from great_expectations.validator.validator import Validator
 
 from synthetic_data_generator import SyntheticDataGenerator
 
@@ -163,7 +169,7 @@ class SalesETL:
             summaries["yearly"] = (
                 df.group_by("order_year")
                 .agg(
-                    pl.count().alias("rows"),
+                    pl.len().alias("rows"),
                     pl.col("sales").sum().round(2).alias("revenue"),
                     pl.col("customer_id").n_unique().alias("unique_customers"),
                 )
@@ -189,7 +195,7 @@ class SalesETL:
                 df.group_by("product_name")
                 .agg(
                     pl.col("sales").sum().round(2).alias("revenue"),
-                    pl.count().alias("orders"),
+                    pl.len().alias("orders"),
                 )
                 .sort("revenue", descending=True)
                 .head(15)
@@ -200,25 +206,54 @@ class SalesETL:
 
     def run_quality_checks(self, df: pl.DataFrame) -> Dict[str, bool]:
         """Run lightweight Great Expectations checks on critical columns."""
-        dataset = PandasDataset(df.to_pandas())
+        pandas_df = df.to_pandas()
+        context = ge.get_context()
+        execution_engine = PandasExecutionEngine()
+        execution_engine.data_context = context
+
+        batch_data = execution_engine.get_batch_data( 
+            RuntimeDataBatchSpec(batch_data=pandas_df)
+        )
+        batch = Batch(data=batch_data, data_context=context)
+        suite = ExpectationSuite("sales_quality_checks")
+        validator = Validator(
+            execution_engine=execution_engine,
+            data_context=context,
+            expectation_suite=suite,
+            batches=[batch],
+        )
         expectations: Dict[str, bool] = {}
 
-        for column in ["order_id", "customer_id", "sales", "order_date"]:
-            if column in dataset.columns:
-                result = dataset.expect_column_values_to_not_be_null(column)
-                expectations[f"{column}_not_null"] = bool(result.success)
-
-        if "sales" in dataset.columns:
-            result = dataset.expect_column_values_to_be_between("sales", min_value=0, strict_min=True)
-            expectations["sales_positive"] = bool(result.success)
-
-        if "order_year" in dataset.columns:
-            result = dataset.expect_column_values_to_be_between(
-                "order_year",
-                min_value=int(df["order_year"].min()),
-                max_value=int(df["order_year"].max()),
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message="`result_format` configured at the Validator-level will not be persisted",
+                category=UserWarning,
             )
-            expectations["order_year_valid_range"] = bool(result.success)
+            warnings.filterwarnings(
+                "ignore",
+                message="`result_format` configured at the Expectation-level will not be persisted",
+                category=UserWarning,
+            )
+
+            for column in ["order_id", "customer_id", "sales", "order_date"]:
+                if column in pandas_df.columns:
+                    result = validator.expect_column_values_to_not_be_null(column)
+                    expectations[f"{column}_not_null"] = bool(result.success)
+
+            if "sales" in pandas_df.columns:
+                result = validator.expect_column_values_to_be_between(
+                    "sales", min_value=0, strict_min=True
+                )
+                expectations["sales_positive"] = bool(result.success)
+
+            if "order_year" in pandas_df.columns:
+                result = validator.expect_column_values_to_be_between(
+                    "order_year",
+                    min_value=int(df["order_year"].min()),
+                    max_value=int(df["order_year"].max()),
+                )
+                expectations["order_year_valid_range"] = bool(result.success)
 
         expectations["overall_success"] = all(expectations.values())
         logger.info("Data quality checks success=%s", expectations["overall_success"])
