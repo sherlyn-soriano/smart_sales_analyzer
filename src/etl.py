@@ -129,7 +129,7 @@ class SalesETL:
                 logger.info("Downloading dataset %s into %s", slug, self.data_dir)
                 download_path = Path(kagglehub.dataset_download(slug, path=str(self.data_dir)))
                 logger.debug("Dataset %s downloaded to %s", slug, download_path)
-            except Exception as exc:  # pragma: no cover - defensive
+            except Exception as exc: 
                 logger.warning("Kaggle download failed for %s: %s", slug, exc)
                 cached_csv = self._find_cached_kaggle_csv(slug)
                 if cached_csv:
