@@ -1,6 +1,6 @@
 # Smart Sales Analyzer
 
-Local analytics sandbox that blends a Kaggle sales dataset with synthetic records, runs automated data-quality checks, and persists everything into DuckDB for downstream reporting via Streamlit.
+A small end-to-end analytics playground: pull the Kaggle sales dataset (or reuse a cached copy), top it up with synthetic records, validate with Great Expectations, and stash the results in DuckDB for easy querying and a Streamlit front end.
 
 ## What You Get
 - **Modern ETL**: Polars + DuckDB pipeline with Great Expectations validation.
@@ -53,48 +53,92 @@ Use the URL printed in the terminal to open the interactive report (filters, cha
 ## Explore DuckDB Tables via CLI
 
 ```bash
-duckdb data/sales_analytics.duckdb
+source .venv/bin/activate
+python - <<'PY'
+import duckdb
+
+with duckdb.connect("data/sales_analytics.duckdb", read_only=True) as con:
+    con.sql("SHOW TABLES FROM analytics").show()
+    con.sql("""
+        SELECT order_year, SUM(sales) AS revenue
+        FROM analytics.sales
+        GROUP BY 1
+        ORDER BY 1
+    """).show()
+PY
 ```
 
-Inside the prompt:
+More handy snippets for screenshots or demos:
 
-```sql
-SHOW TABLES;
-DESCRIBE analytics.sales;
-SELECT order_year, SUM(sales) AS revenue
-FROM analytics.sales
-GROUP BY 1
-ORDER BY 1;
+```bash
+source .venv/bin/activate
+python - <<'PY'
+import duckdb
+
+with duckdb.connect("data/sales_analytics.duckdb", read_only=True) as con:
+    con.sql("""
+        SELECT COUNT(*) AS rows, SUM(sales) AS total_revenue
+        FROM analytics.sales
+    """).show()
+    con.sql("""
+        SELECT MIN(order_date) AS min_date, MAX(order_date) AS max_date
+        FROM analytics.sales
+    """).show()
+    con.sql("""
+        SELECT order_year, segment, revenue
+        FROM analytics.segment_yearly_summary
+        ORDER BY order_year, revenue DESC
+    """).show()
+    con.sql("""
+        SELECT *
+        FROM analytics.regional_revenue_summary
+        ORDER BY revenue DESC
+    """).show()
+    con.sql("""
+        SELECT *
+        FROM analytics.top_products_summary
+        ORDER BY revenue DESC
+        LIMIT 15
+    """).show()
+PY
 ```
-
-Exit with `QUIT;`.  
-Capture these commands/output for your project documentation or demo.
 
 ## Repository Layout
 
 ```
-├── data/                      # Materialised outputs (created after running ETL)
+├── data/                     
 │   ├── sales_analytics.duckdb
 │   ├── sales_enriched.parquet
 │   ├── *.csv (summary tables)
 │   └── quality_report.json
 ├── src/
-│   ├── etl.py                 # SalesETL pipeline
-│   ├── dashboard.py           # Streamlit app
+│   ├── etl.py                 
+│   ├── dashboard.py           
 │   └── synthetic_data_generator.py
 ├── requirements.txt
 └── README.md
 ```
 
-## Suggested Screenshots / Images
-For your GitHub repo or HR demo, consider adding:
-1. **Pipeline run snippet** – terminal showing `python src/etl.py` completion and “Data quality checks success=True”.
-2. **Streamlit dashboard** – screenshot of key charts/metrics.
-3. **DuckDB query** – CLI output of `SELECT …` to show the analytics tables.
-4. *(Optional)* A lightweight architecture diagram (ETL → DuckDB → Streamlit) if you want a visual.
+## Demo Shots
+Drop your screenshots in `assets/` and reference them here. Examples from my run:
 
-Add these images under a `docs/` folder (e.g., `docs/streamlit-dashboard.png`) and reference them in the README once captured.
+<p align="center">
+  <img src="assets/pipeline_run.png" alt="ETL execution with data quality success" width="640">
+</p>
 
----
+<p align="center">
+  <img src="assets/streamline_dashboard_1.png" alt="Streamlit dashboard overview" width="640">
+</p>
 
-Questions or future ideas? Consider adding forecasting notebooks, CI checks around the ETL, or parametrised Great Expectations suites. Have fun showcasing your analytics pipeline!
+<p align="center">
+  <img src="assets/streamline_dashboard_2.png" alt="Streamlit dashboard product drilldown" width="640">
+</p>
+
+<p align="center">
+  <img src="assets/Revenue_by_year.png" alt="DuckDB yearly revenue query results" width="640">
+</p>
+
+<p align="center">
+  <img src="assets/analytics.top_products_summary.png" alt="DuckDB top products query results" width="640">
+</p>
+

@@ -35,7 +35,7 @@ def load_summary(path: Path) -> pl.DataFrame | None:
 def main() -> None:
     st.set_page_config(page_title="Smart Sales Analyzer", layout="wide")
     st.title("📊 Smart Sales Analyzer Dashboard")
-    st.caption("Kaggle dataset augmented with 10,000 locally generated synthetic rows.")
+    st.caption("Kaggle dataset augmented with 5000 locally generated synthetic rows.")
 
     try:
         dataset = load_dataset()

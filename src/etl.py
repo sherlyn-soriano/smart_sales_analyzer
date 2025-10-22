@@ -208,7 +208,7 @@ class SalesETL:
     def build_dataset(
         self,
         base_df: Optional[pl.DataFrame],
-        num_synthetic_rows: int = 10_000,
+        num_synthetic_rows: int = 5000,
         **kwargs,
     ) -> pl.DataFrame:
         """Combine base data with synthetic rows (or generate synthetic from scratch)."""
