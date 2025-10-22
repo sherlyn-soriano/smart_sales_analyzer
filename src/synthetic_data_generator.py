@@ -1,15 +1,18 @@
-import polars as pl
-import numpy as np
-from faker import Faker
-from datetime import datetime, timedelta
-import random 
-from typing import Dict, List, Optional
 import logging
+import random
+from datetime import date, datetime, timedelta
+from typing import Optional, Sequence
+
+import numpy as np
+import polars as pl
+from faker import Faker
 
 logger = logging.getLogger(__name__)
 
+
 class SyntheticDataGenerator:
-    """ Generate realistic synthetic sales data """
+    """Generate realistic synthetic sales data."""
+
     SHIP_MODES = ["First Class", "Same Day", "Second Class", "Standard Class"]
     SEGMENTS = ["Consumer", "Corporate", "Home Office"]
     US_CITIES = {
@@ -37,149 +40,198 @@ class SyntheticDataGenerator:
         "Portland": {"state": "Oregon", "zip_prefix": "972", "region": "West"},
         "Las Vegas": {"state": "Nevada", "zip_prefix": "891", "region": "West"},
         "Miami": {"state": "Florida", "zip_prefix": "331", "region": "South"},
-        "Atlanta": {"state": "Georgia", "zip_prefix": "303", "region": "South"}
+        "Atlanta": {"state": "Georgia", "zip_prefix": "303", "region": "South"},
     }
 
-    CATEGORIES = {"Furniture": {"Bookcases", "Chairs", "Furnishings", "Tables"},
-                  "Office Supplies": {"Appliances", "Art", "Binders", "Envelopes", "Fasteners", "Labels",
-                                       "Paper", "Storage","Supplies" },
-                  "Technology": {"Accessories", "Copiers", "Machines","Phones"}  }
+    CATEGORIES = {
+        "Furniture": {"Bookcases", "Chairs", "Furnishings", "Tables"},
+        "Office Supplies": {
+            "Appliances",
+            "Art",
+            "Binders",
+            "Envelopes",
+            "Fasteners",
+            "Labels",
+            "Paper",
+            "Storage",
+            "Supplies",
+        },
+        "Technology": {"Accessories", "Copiers", "Machines", "Phones"},
+    }
 
-    def __init__(self, seed: int= 42, locale: str = 'en_US'):
-        """ Initialize the synthetic data generator """
+    def __init__(self, seed: int = 42, locale: str = "en_US") -> None:
+        """Initialize the synthetic data generator."""
 
         self.fake = Faker(locale)
         Faker.seed(seed)
         random.seed(seed)
         np.random.seed(seed)
-        logger.info(f"Initialized Synthetic_Data_Generator with seed={seed}")
-    
+        logger.info("Initialized SyntheticDataGenerator with seed=%s", seed)
+
     def generate_customer_name(self) -> str:
-        """ Generate customer name based on data of USA """
-        name = self.fake.name()
-        return name
+        """Generate a customer name for the United States locale."""
+        return self.fake.name()
 
     def generate_customer_id(self, customer_name: str) -> str:
-        """ Generate customer ID from customer name example: (CG-12456 from Claire Gute) """
+        """Generate a customer identifier (e.g. CG-12456)."""
         parts = customer_name.split()
-        initials = parts[0][0] + parts[1][0]
-        number = random.randint(10000,99999)
-        return f"{initials}-{number}"
-    
-    def generate_order_dates(self, start_date: datetime, end_date: datetime,
-                            min_ship_days: int = 1, max_ship_days: int = 14) -> tuple:
-        """ Generate the order date and the ship date with the condition that shipdate must be greater than the order date """
-        order_date = self.fake.date_between(start_date = start_date, end_date = end_date)
+        if len(parts) < 2:
+            initials = (parts[0][0] if parts else "X") + "X"
+        else:
+            initials = parts[0][0] + parts[1][0]
+        number = random.randint(10000, 99999)
+        return f"{initials.upper()}-{number}"
+
+    def generate_order_dates(
+        self,
+        start_date: date,
+        end_date: date,
+        min_ship_days: int = 1,
+        max_ship_days: int = 14,
+    ) -> tuple[date, date]:
+        """Generate order and ship dates (ship date after order date)."""
+        order_date = self.fake.date_between(start_date=start_date, end_date=end_date)
         ship_date = self.fake.date_between(
-            start_date = order_date + timedelta(days = min_ship_days),
-            end_date = order_date + timedelta(days = max_ship_days)
+            start_date=order_date + timedelta(days=min_ship_days),
+            end_date=order_date + timedelta(days=max_ship_days),
         )
         return order_date, ship_date
-    
-    def generate_location_data(self) -> Dict[str,str]:
-        """ Generate City, State, Postal Code and Region """
-        city = random.choice(list(self.US_CITIES.keys()))
+
+    def generate_location_data(self) -> dict[str, str]:
+        """Generate city, state, postal code and region."""
+        city = random.choice(list(self.US_CITIES))
         city_info = self.US_CITIES[city]
-        postal_code = f"{city_info['zip_prefix']}{random.randint(10,99)}"
+        postal_code = f"{city_info['zip_prefix']}{random.randint(10, 99)}"
         return {
             "City": city,
-            "State": city_info['state'],
-            "Postal_Code": postal_code,
-            "Region": city_info['region']
+            "State": city_info["state"],
+            "Postal Code": postal_code,
+            "Region": city_info["region"],
         }
-    def generate_categories(self) -> Dict[str,str]:
-        """ Generate category and subcategory by random choice"""
-        category = random.choice(list(self.CATEGORIES.keys()))
+
+    def generate_categories(self) -> dict[str, str]:
+        """Generate category and sub-category by random choice."""
+        category = random.choice(list(self.CATEGORIES))
         sub_category = random.choice(list(self.CATEGORIES[category]))
-        return { 
-            "Category" : category,
-            "Sub_Category" : sub_category
-        }
+        return {"Category": category, "Sub-Category": sub_category}
 
     def generate_order_id(self, order_date: datetime) -> str:
-        """ Generate order_id example: US-2016-118983 """
-        order_id = f"US-{order_date.year}-{random.randint(100000,999999)}"
-        return order_id
-    
-    def generate_sales_amount(self, min_amount: int = 20, max_amount: int =2000) -> float:
-        """ Generate salesamount based on a range """
-        sales_amount = random.randint(min_amount,max_amount)
-        return sales_amount
-    
+        """Generate an order identifier (e.g. US-2016-118983)."""
+        return f"US-{order_date.year}-{random.randint(100000, 999999)}"
+
+    def generate_sales_amount(self, min_amount: int = 20, max_amount: int = 2000) -> float:
+        """Generate a sales amount within the provided range."""
+        return float(random.randint(min_amount, max_amount))
+
     def generate_product_id(self, category: str, subcategory: str) -> str:
-       return f"{category[0:3].upper()}-{subcategory[0:2].upper()}-100{random.randint(10000,99999)}"
+        """Generate a product identifier based on category and sub-category."""
+        cat_abbr = category[:3].upper()
+        sub_abbr = subcategory[:2].upper()
+        return f"{cat_abbr}-{sub_abbr}-100{random.randint(10000, 99999)}"
 
-    def generate_synthetic_data(self, original_df : pl.DataFrame, 
-                                num_rows: int = 10000,
-                                start_date: datetime = datetime(2020,1,1),
-                                end_date: datetime =  datetime(2024,12,31))  -> pl.DataFrame :
-        
-        logging.info(f"Generating {num_rows} synthetics rows...")
-        
-        if original_df is None or len(original_df) == 0:
-            raise ValueError("Original dataframe is empty")
+    def _fallback_products(self) -> Sequence[str]:
+        """Fallback list of synthetic product names."""
+        products = []
+        for category, subcategories in self.CATEGORIES.items():
+            for sub in subcategories:
+                products.append(f"{category} - {sub}")
+        return products
 
-        # Extract unique products for variety
-        products_df = original_df.select(["Product Name"]).unique()
-        
-        # Get starting row ID
-        start_row_id = original_df.select(pl.col("Row ID")).max()[0,0] + 1
+    def generate_synthetic_data(
+        self,
+        original_df: Optional[pl.DataFrame] = None,
+        num_rows: int = 10_000,
+        start_date: date = date(2020, 1, 1),
+        end_date: date = date(2024, 12, 31),
+    ) -> pl.DataFrame:
+        """Generate synthetic sales records."""
+
+        logger.info("Generating %s synthetic rows...", num_rows)
+
+        product_names: Sequence[str] = []
+        start_row_id = 1
+
+        if original_df is not None and len(original_df) > 0:
+            if "Product Name" in original_df.columns:
+                try:
+                    product_names = (
+                        original_df.select("Product Name")
+                        .unique()
+                        ["Product Name"]
+                        .to_list()
+                    )
+                except Exception as exc:  # pragma: no cover - defensive
+                    logger.warning("Could not extract product names: %s", exc)
+            if "Row ID" in original_df.columns:
+                try:
+                    start_row_id = int(
+                        original_df.select(pl.col("Row ID").max()).item()
+                    ) + 1
+                except Exception as exc:  # pragma: no cover - defensive
+                    logger.warning("Could not determine starting Row ID: %s", exc)
+
+        if not product_names:
+            product_names = self._fallback_products()
 
         synthetic_rows = []
 
-        # Get Order ID
-
         for i in range(num_rows):
-            
             customer_name = self.generate_customer_name()
             customer_id = self.generate_customer_id(customer_name)
-            order_date, ship_date = self.generate_order_dates(start_date = start_date, end_date = end_date)
+            order_date, ship_date = self.generate_order_dates(
+                start_date=start_date, end_date=end_date
+            )
             order_id = self.generate_order_id(order_date)
             location = self.generate_location_data()
-            categories = self. generate_categories()
-            product_id = self.generate_product_id(categories["Category"], categories["Sub_Category"])
-            product_index = random.randint(0, len(products_df)+1)
-            product_name = products_df[product_index]
-            sales = self.generate_sales_amount(min_amount= 10 , max_amount=2900)
+            categories = self.generate_categories()
+            product_id = self.generate_product_id(
+                categories["Category"], categories["Sub-Category"]
+            )
+            product_name = random.choice(product_names)
+            sales = self.generate_sales_amount(min_amount=10, max_amount=2900)
 
             row = {
-                "Row ID" : start_row_id + i,
-                "Order ID" : order_id,
-                "Order Date" : order_date,
-                "Ship Date" : ship_date,
-                "Ship Mode": self.fake.random_element(self.SHIP_MODES),
+                "Row ID": start_row_id + i,
+                "Order ID": order_id,
+                "Order Date": order_date,
+                "Ship Date": ship_date,
+                "Ship Mode": random.choice(self.SHIP_MODES),
                 "Customer ID": customer_id,
                 "Customer Name": customer_name,
-                "Segment": self.fake.random_element(self.SEGMENTS),
-                "Country":"United States",
+                "Segment": random.choice(self.SEGMENTS),
+                "Country": "United States",
                 "City": location["City"],
                 "State": location["State"],
-                "Postal Code": location["Postal_Code"],
+                "Postal Code": location["Postal Code"],
                 "Region": location["Region"],
-                "Category": categories["Category"] ,
-                "Sub_category": categories["Sub_Category"],
+                "Category": categories["Category"],
+                "Sub-Category": categories["Sub-Category"],
                 "Product ID": product_id,
-                "Product_name": product_name ,
-                "Sales": sales
+                "Product Name": product_name,
+                "Sales": sales,
             }
-
             synthetic_rows.append(row)
-            synthetic_df = pl.DataFrame(synthetic_rows)
-            logger.info(f"Sucessfully generated {len(synthetic_df)} synthetic rows")
-            return synthetic_df
-    def augment_dataframe(self, original_df : pl.DataFrame, 
-                          num_synthetic_rows: int = 10000,
-                          **kwargs ):
-        """ Augment sales data from CSV Kaggle with synthetic data 
-        Args:
-            original_df: Original DataFrame
-            num_synthetic_rows: Numbers of synthetics rows to add
-        Returns: 
-            Combined DataFrame with original + synthetic data"""
-        
-        synthetic_df = self.generate_synthetic_data(original_df, num_rows = num_synthetic_rows, **kwargs )
-        combined_df = pl.contact([original_df, synthetic_df])
-        logger.info(f"Augmented data: {len(original_df)} original + "
-                    f"{len(synthetic_df)} synthetic = {len(combined_df)} total rows")
-        return combined_df
 
+        synthetic_df = pl.DataFrame(synthetic_rows)
+        logger.info("Successfully generated %s synthetic rows", len(synthetic_df))
+        return synthetic_df
+
+    def augment_dataframe(
+        self,
+        original_df: pl.DataFrame,
+        num_synthetic_rows: int = 10_000,
+        **kwargs,
+    ) -> pl.DataFrame:
+        """Augment an existing sales dataframe with synthetic rows."""
+
+        synthetic_df = self.generate_synthetic_data(
+            original_df, num_rows=num_synthetic_rows, **kwargs
+        )
+        combined_df = pl.concat([original_df, synthetic_df])
+        logger.info(
+            "Augmented data: %s original + %s synthetic = %s total rows",
+            len(original_df),
+            len(synthetic_df),
+            len(combined_df),
+        )
+        return combined_df
